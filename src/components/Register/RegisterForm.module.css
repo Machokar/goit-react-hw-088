@@ -1,0 +1,53 @@
+.form {
+  width: 300px;
+  margin-bottom: 20px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.formGroup select {
+  padding: 4px;
+}
+
+.error {
+  font-size: 12px;
+  color: orangered;
+}
+
+.label {
+  margin-bottom: 5px;
+}
+.button {
+  padding: 7px 5px;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 50%;
+  margin: 0 auto;
+  background-color: rgb(25, 136, 221);
+}
+
+.button:hover {
+  background-color: rgb(172, 177, 180);
+}
+
+.input {
+  padding: 5px;
+  border-radius: 1px;
+  outline: none;
+}
+
+.link {
+  color: black;
+  display: inline-block;
+  text-decoration: none;
+  font-weight: 700;
+}
