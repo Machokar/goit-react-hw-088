@@ -30,7 +30,7 @@ const authSlice = createSlice({
         state.isLoggedIn = false;
       })
       .addCase(refreshUser.fulfilled, (state, action) => {
-        if (action.payload.user) {
+        if (action.payload.user && action.payload.user.name) {
           state.user = action.payload.user;
         }
         state.isLoggedIn = true;
