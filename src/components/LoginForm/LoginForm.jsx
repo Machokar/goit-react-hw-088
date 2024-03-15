@@ -4,64 +4,59 @@ import css from './LoginForm.module.css';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import { useId } from 'react';
-
-const loginSchema = Yup.object().shape({
-  email: Yup.string().min(3, 'Too Short!').max(50, 'Too Long!').required('Required'),
-  password: Yup.string().min(3, 'Too Short!').max(50, 'Too Long!').required('Required'),
-});
-
 export const LoginForm = () => {
   const dispatch = useDispatch();
-  const emailId = useId();
-  const passId = useId();
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    const form = e.currentTarget;
-
-    dispatch(
-      logIn({
-        email: form.elements.email.value,
-        password: form.elements.password.value,
-      })
-    )
-      .unwrap()
-      .then(() => {
-        console.log(' success');
-      })
-      .catch(() => {
-        console.log('error');
-      });
-    form.reset();
-  };
-
+  const email_Id = useId();
+  const pass_Id = useId();
+  const loginSchema = Yup.object().shape({
+    email: Yup.string()
+      .email()
+      .matches('^(?!.*@[^,]*,)', 'Invalid email')
+      .required('Email is required'),
+    password: Yup.string()
+      .required('No password provided.')
+      .min(8, 'Password is too short - should be 8 chars minimum.')
+      .matches('[a-zA-Z]', 'Password can only contain Latin letters.'),
+  });
   return (
-    <Formik
-      initialValues={{
-        email: '',
-        password: '',
-      }}
-      validationSchema={loginSchema}
-      onSubmit={handleSubmit}
-    >
-      <Form className={css.form} onSubmit={handleSubmit} autoComplete="off">
-        <div className={css.formGroup}>
-          <label className={css.label} htmlFor={emailId}>
-            Email:
-          </label>
-          <Field type="text" name="email" id={emailId} autoComplete="username" />
-          <ErrorMessage className={css.error} name="email" component="span" />
-        </div>
-        <div className={css.formGroup}>
-          <label className={css.label} htmlFor={passId}>
-            Password:
-          </label>
-          <Field type="password" name="password" id={passId} autoComplete="current-password" />
-        </div>
-        <button className={css.button} type="submit">
-          Log In
-        </button>
-      </Form>
-    </Formik>
+    <div>
+      <Formik
+        initialValues={{
+          email: '',
+          password: '',
+        }}
+        onSubmit={(values, action) => {
+          dispatch(logIn(values));
+          action.resetForm();
+        }}
+        validationSchema={loginSchema}
+      >
+        <Form className={css.form} autoComplete="off">
+          <div className={css.formGroup}>
+            <label htmlFor={email_Id} className={css.label}>
+              Email
+            </label>
+            <Field type="email" name="email" id={email_Id} autoComplete="username"></Field>
+            <ErrorMessage name="email" component="span" className={css.error} />
+          </div>
+          <div className={css.formGroup}>
+            <label htmlFor={pass_Id} className={css.label}>
+              Password
+            </label>
+            <Field
+              type="password"
+              name="password"
+              id={pass_Id}
+              autoComplete="current-password"
+            ></Field>
+            <ErrorMessage name="password" component="span" className={css.error} />
+          </div>
+          <button className={css.button} type="submit">
+            Login
+          </button>
+        </Form>
+      </Formik>
+    </div>
   );
 };
