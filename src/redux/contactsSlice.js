@@ -1,45 +1,50 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { addContact, deleteContact, fetchContact } from './operations';
-
-const handlePending = state => {
-  state.loading = true;
-};
-
-const handleRejected = (state, action) => {
-  state.loading = false;
-  state.error = action.payload;
-};
-const handleFulfilled = state => {
-  state.loading = false;
-};
+import { fetchContact, addContact, deleteContact } from './operations';
 
 const contactsSlice = createSlice({
   name: 'contacts',
   initialState: {
     items: [],
     loading: false,
-    error: null,
+    error: false,
   },
   extraReducers: builder =>
     builder
-      .addCase(fetchContact.pending, handlePending)
+      .addCase(fetchContact.pending, state => {
+        state.loading = true;
+        state.error = false;
+      })
       .addCase(fetchContact.fulfilled, (state, action) => {
         state.loading = false;
         state.items = action.payload;
       })
-      .addCase(fetchContact.rejected, handleRejected)
-      .addCase(addContact.pending, handlePending)
+      .addCase(fetchContact.rejected, state => {
+        state.loading = false;
+        state.error = true;
+      })
+      .addCase(addContact.pending, state => {
+        state.loading = true;
+        state.error = false;
+      })
       .addCase(addContact.fulfilled, (state, action) => {
+        state.loading = false;
         state.items.push(action.payload);
-        handleFulfilled(state);
       })
-      .addCase(addContact.rejected, handleRejected)
-      .addCase(deleteContact.pending, () => {})
+      .addCase(addContact.rejected, state => {
+        state.loading = false;
+        state.error = true;
+      })
+      .addCase(deleteContact.pending, state => {
+        state.loading = true;
+        state.error = false;
+      })
       .addCase(deleteContact.fulfilled, (state, action) => {
+        state.loading = false;
         state.items = state.items.filter(item => item.id !== action.payload.id);
-        handleFulfilled(state);
       })
-      .addCase(deleteContact.rejected, handleRejected),
+      .addCase(deleteContact.rejected, state => {
+        state.loading = false;
+        state.error = true;
+      }),
 });
-
 export default contactsSlice.reducer;
